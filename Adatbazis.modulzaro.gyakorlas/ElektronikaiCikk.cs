@@ -31,7 +31,7 @@ namespace Adatbazis.modulzaro.gyakorlas
 
         public override string ToString()
         {
-            return gyarto;
+            return gyarto + tipus + fogyasztas + ar ;
 
         }
 
