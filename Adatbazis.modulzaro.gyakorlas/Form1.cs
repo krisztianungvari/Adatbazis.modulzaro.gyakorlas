@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,6 +14,7 @@ namespace Adatbazis.modulzaro.gyakorlas
 {
     public partial class Form1 : Form
     {
+        MySqlConnection connection = null;
         public Form1()
         {
             InitializeComponent();
@@ -151,7 +153,7 @@ namespace Adatbazis.modulzaro.gyakorlas
 
         private void button_Modositas_Click(object sender, EventArgs e)
         {
-            // Ha itt módosítok, akkor az adatbázisban is módosulnia kell az adatoknak!
+          
 
         }
 
@@ -161,6 +163,104 @@ namespace Adatbazis.modulzaro.gyakorlas
             form2.ShowDialog();
 
 
+        }
+
+        private void button_updateTelevizio_Click(object sender, EventArgs e)
+        {
+            string Gyarto = textBox_Gyarto.Text;
+            string Tipus = textBox_Tipus.Text;
+            int Fogyasztas = (int)numericUpDown_Fogyasztas.Value;
+            int Ar =(int)numericUpDown_Ar.Value;
+            int KiadasEv = (int)numericUpDown_Kiadas.Value;
+            string KijelzoTechnologia = comboBox_Kijelzo.Text;
+            int KepAtlo = (int)numericUpDown_Kepatlo.Value;
+            //INSERT INTO `televizo` (`Gyarto`, `Tipus`, `Fogyasztas`, `Ar`, `KiadasEv`, `KijelzoTechnologia`, `KepAtlo`) VALUES ('Sasmung', 'S3400', '1000', '120000', '2020', 'IPS', '72');
+            string Sql = "INSERT INTO `televizo` (`Gyarto`, `Tipus`, `Fogyasztas`, `Ar`, `KiadasEv`, `KijelzoTechnologia`, `KepAtlo`) VALUES (`@Gyarto`, `@Tipus`, `@Fogyasztas`, `@Ar`, `@KiadasEv`, `@KijelzoTechnologia`,`@KepAtlo`)";
+            MySqlCommand command = connection.CreateCommand();
+            command.CommandText = Sql;
+            command.Prepare();
+            command.Parameters.AddWithValue("@Gyarto", Gyarto);
+            command.Parameters.AddWithValue("@Tipus", Tipus);
+            command.Parameters.AddWithValue("@Fogyasztas", Fogyasztas);
+            command.Parameters.AddWithValue("@Ar", Ar);
+            command.Parameters.AddWithValue("@KiadasEv", KiadasEv);
+            command.Parameters.AddWithValue("@KijelzoTechnologia", KijelzoTechnologia);
+            command.Parameters.AddWithValue("@Kepatlo", KepAtlo);
+            command.ExecuteNonQuery();
+            textBox_Gyarto.Text = "";
+            textBox_Tipus.Text = "";
+            numericUpDown_Fogyasztas.Value = numericUpDown_Fogyasztas.Minimum;
+            numericUpDown_Ar.Value = numericUpDown_Ar.Minimum;
+            numericUpDown_Kiadas.Value = numericUpDown_Kiadas.Minimum;
+            comboBox_Kijelzo.Text = "";
+            numericUpDown_Kepatlo.Value = numericUpDown_Kepatlo.Minimum;
+            
+        }
+        private void Adatkapcsolat()
+        {
+            MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder();
+            builder.Server = "localhost";
+            builder.UserID = "root";
+            builder.Port = 3306;
+            builder.Password = "";
+            builder.Database = "elektronika";
+            builder.CharacterSet = "UTF8";
+            builder.SslMode = MySqlSslMode.None;
+
+
+            string connectionString = builder.ToString();
+
+
+            try
+            {
+                this.connection = new MySqlConnection(connectionString);
+
+            }
+            catch (MySqlException ex)
+            {
+
+                MessageBox.Show("Hiba az adatbázis csatlakozás közben: " + ex.Message);
+
+            }
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            Adatkapcsolat();
+
+        }
+
+        private void button_Televizio_Click_1(object sender, EventArgs e)
+        {
+            string Gyarto = textBox_Gyarto.Text;
+            string Tipus = textBox_Tipus.Text;
+            int Fogyasztas = (int)numericUpDown_Fogyasztas.Value;
+            int Ar = (int)numericUpDown_Ar.Value;
+            int KiadasEv = (int)numericUpDown_Kiadas.Value;
+            string KijelzoTechnologia = comboBox_Kijelzo.Text;
+            int KepAtlo = (int)numericUpDown_Kepatlo.Value;
+            //INSERT INTO `televizo` (`Gyarto`, `Tipus`, `Fogyasztas`, `Ar`, `KiadasEv`, `KijelzoTechnologia`, `KepAtlo`) VALUES ('Sasmung', 'S3400', '1000', '120000', '2020', 'IPS', '72');
+            string Sql = "INSERT INTO `televizo` (`Gyarto`, `Tipus`, `Fogyasztas`, `Ar`, `KiadasEv`, `KijelzoTechnologia`, `KepAtlo`) VALUES (`@Gyarto`, `@Tipus`, `@Fogyasztas`, `@Ar`, `@KiadasEv`, `@KijelzoTechnologia`,`@KepAtlo`)";
+            MySqlCommand command = connection.CreateCommand();
+            command.CommandText = Sql;
+            command.Prepare();
+            command.Parameters.AddWithValue("@Gyarto", Gyarto);
+            command.Parameters.AddWithValue("@Tipus", Tipus);
+            command.Parameters.AddWithValue("@Fogyasztas", Fogyasztas);
+            command.Parameters.AddWithValue("@Ar", Ar);
+            command.Parameters.AddWithValue("@KiadasEv", KiadasEv);
+            command.Parameters.AddWithValue("@KijelzoTechnologia", KijelzoTechnologia);
+            command.Parameters.AddWithValue("@Kepatlo", KepAtlo);
+            command.ExecuteNonQuery();
+            textBox_Gyarto.Text = "";
+            textBox_Tipus.Text = "";
+            numericUpDown_Fogyasztas.Value = numericUpDown_Fogyasztas.Minimum;
+            numericUpDown_Ar.Value = numericUpDown_Ar.Minimum;
+            numericUpDown_Kiadas.Value = numericUpDown_Kiadas.Minimum;
+            comboBox_Kijelzo.Text = "";
+            numericUpDown_Kepatlo.Value = numericUpDown_Kepatlo.Minimum;
+            Televizio uj = new Televizio(Gyarto, Tipus, Fogyasztas, Ar, KiadasEv, Enum.Parse(typeof(kT), KijelzoTechnologia),(double) KepAtlo);
         }
     }
 }
